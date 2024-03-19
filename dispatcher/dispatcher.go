@@ -62,8 +62,7 @@ func (d *Dispatcher) wrapEndpoint(endpoint string) {
 }
 
 func (d *Dispatcher) addRoute(route tf.Route, router *Router) {
-	endpoint := internal.ExtractRawEndpoint(route.HandlerEndpoint())
-	d.handlers.addRoute(handlerRoute{
+	endpoint := d.handlers.addRoute(handlerRoute{
 		Route:  route,
 		router: router,
 	})
