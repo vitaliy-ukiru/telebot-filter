@@ -3,12 +3,12 @@ package dispatcher
 import (
 	"github.com/vitaliy-ukiru/telebot-filter/internal"
 	"github.com/vitaliy-ukiru/telebot-filter/internal/container"
-	"github.com/vitaliy-ukiru/telebot-filter/telefilter"
+	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
 	tb "gopkg.in/telebot.v3"
 )
 
 type handlerRoute struct {
-	telefilter.Route
+	tf.Route
 	router *Router
 }
 
@@ -27,7 +27,7 @@ func (hs handlerStorage) Process(endpoint string, c tb.Context) error {
 }
 
 func (hs handlerStorage) addRoute(r handlerRoute) (endpoint string) {
-	endpoint = internal.ExtractRawEndpoint(r.HandlerEndpoint())
+	endpoint = internal.ExtractRawEndpoint(r.Endpoint)
 
 	l := hs[endpoint]
 	if l == nil {

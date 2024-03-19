@@ -7,13 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/vitaliy-ukiru/telebot-filter/internal"
 	"github.com/vitaliy-ukiru/telebot-filter/internal/container"
-	"github.com/vitaliy-ukiru/telebot-filter/telefilter"
+	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
 	tb "gopkg.in/telebot.v3"
 )
-
-func TestA(t *testing.T) {
-	assert.True(t, true)
-}
 
 func newMiddleware(buff *strings.Builder, id string) tb.MiddlewareFunc {
 	return func(next tb.HandlerFunc) tb.HandlerFunc {
@@ -28,8 +24,8 @@ func newList(m ...tb.MiddlewareFunc) *internal.MiddlewareList {
 	return container.NewListFromSlice(m)
 }
 
-func newHandler(buff *strings.Builder, id string) telefilter.Handler {
-	return telefilter.RawHandler{
+func newHandler(buff *strings.Builder, id string) tf.Handler {
+	return tf.RawHandler{
 		Callback: func(_ tb.Context) error {
 			buff.WriteString(id)
 			return nil
@@ -40,7 +36,7 @@ func newHandler(buff *strings.Builder, id string) telefilter.Handler {
 func Test_handlerRoute_run(t *testing.T) {
 	type fields struct {
 		router  *Router
-		Handler telefilter.Handler
+		Handler tf.Handler
 		mw      []tb.MiddlewareFunc
 	}
 	var c tb.Context = nil
@@ -103,7 +99,7 @@ func Test_handlerRoute_run(t *testing.T) {
 			buff.Reset()
 			hr := handlerRoute{
 				router: tt.fields.router,
-				Route: telefilter.Route{
+				Route: tf.Route{
 					Handler:     tt.fields.Handler,
 					Middlewares: tt.fields.mw,
 				},
