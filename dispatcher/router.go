@@ -2,7 +2,7 @@ package dispatcher
 
 import (
 	"github.com/vitaliy-ukiru/telebot-filter/internal"
-	"github.com/vitaliy-ukiru/telebot-filter/telefilter"
+	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
 	tb "gopkg.in/telebot.v3"
 )
 
@@ -20,27 +20,21 @@ func newRouter(dp *Dispatcher, parent *Router) *Router {
 }
 
 // Bind builds and add handler from builder.
-func (r *Router) Bind(b *Builder) (endpoint string) {
-	return r.Dispatch(b.Build())
+func (r *Router) Bind(b *Builder) {
+	r.Dispatch(b.Build())
 }
 
 // Handle manually adds handler with middlewares
 // almost like telebot.
-func (r *Router) Handle(handler telefilter.Handler, mw ...tb.MiddlewareFunc) (endpoint string) {
-	h := telefilter.Route{
-		Handler:     handler,
-		Middlewares: mw,
-	}
-	return r.Dispatch(h)
+func (r *Router) Handle(endpoint any, handler tf.Handler, mw ...tb.MiddlewareFunc) {
+	route := tf.NewRoute(endpoint, handler, mw...)
+	r.Dispatch(route)
 }
 
 // Dispatch most low-level api accessible from outside the module.
 // I think it better way to use in addons for this module.
-func (r *Router) Dispatch(route telefilter.Route) (endpoint string) {
-	endpoint = internal.ExtractRawEndpoint(route.HandlerEndpoint())
-
+func (r *Router) Dispatch(route tf.Route) {
 	r.dp.addRoute(route, r)
-	return
 }
 
 // Use middlewares for handlers of this router and other child routers.
