@@ -9,10 +9,6 @@ import (
 // for separated filtering and running or create
 // custom types.
 type Handler interface {
-	// HandlerEndpoint must always return endpoint for handlers
-	// as string or telebot.CallbackUnique.
-	HandlerEndpoint() any
-
 	// Check filters update.
 	Check(c tb.Context) bool
 
@@ -29,27 +25,23 @@ type Handler interface {
 // additional features.
 type Route struct {
 	Handler
+	Endpoint    any
 	Middlewares []tb.MiddlewareFunc
 }
 
-func NewRoute(handler Handler, middlewares ...tb.MiddlewareFunc) Route {
-	return Route{Handler: handler, Middlewares: middlewares}
+func NewRoute(endpoint any, handler Handler, middlewares ...tb.MiddlewareFunc) Route {
+	return Route{Handler: handler, Endpoint: endpoint, Middlewares: middlewares}
 }
 
 // RawHandler is builtin handler with separated
 // filters and callback.
 type RawHandler struct {
-	Endpoint any
 	Filters  []Filter
 	Callback tb.HandlerFunc
 }
 
-func NewRawHandler(endpoint any, callback tb.HandlerFunc, filters ...Filter) RawHandler {
-	return RawHandler{Endpoint: endpoint, Filters: filters, Callback: callback}
-}
-
-func (h RawHandler) HandlerEndpoint() any {
-	return h.Endpoint
+func NewRawHandler(callback tb.HandlerFunc, filters ...Filter) RawHandler {
+	return RawHandler{Filters: filters, Callback: callback}
 }
 
 func (h RawHandler) Check(c tb.Context) bool {
