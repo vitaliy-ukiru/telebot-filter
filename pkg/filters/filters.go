@@ -1,11 +1,11 @@
 package filters
 
 import (
-	"github.com/vitaliy-ukiru/filter-telebot/dispatcher"
+	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
 	tb "gopkg.in/telebot.v3"
 )
 
-func Any(filters ...dispatcher.Filter) dispatcher.Filter {
+func Any(filters ...tf.Filter) tf.Filter {
 	return func(c tb.Context) bool {
 		for _, f := range filters {
 			if f(c) {
@@ -16,13 +16,13 @@ func Any(filters ...dispatcher.Filter) dispatcher.Filter {
 	}
 }
 
-func Not(filter dispatcher.Filter) dispatcher.Filter {
+func Not(filter tf.Filter) tf.Filter {
 	return func(c tb.Context) bool {
 		return !filter(c)
 	}
 }
 
-func All(filters ...dispatcher.Filter) dispatcher.Filter {
+func All(filters ...tf.Filter) tf.Filter {
 	return func(c tb.Context) bool {
 		for _, f := range filters {
 			if !f(c) {
