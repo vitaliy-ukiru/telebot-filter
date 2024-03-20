@@ -24,8 +24,10 @@ type Dispatcher struct {
 
 func NewDispatcher(g *tb.Group) *Dispatcher {
 	dp := &Dispatcher{
-		g:       g,
-		wrapped: make(container.Set[string]),
+		g:                    g,
+		handlers:             make(handlerStorage),
+		wrapped:              make(container.Set[string]),
+		endpointsMiddlewares: make(map[string]*internal.MiddlewareList),
 	}
 	dp.Router = newRouter(dp, nil)
 	return dp
