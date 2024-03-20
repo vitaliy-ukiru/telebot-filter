@@ -17,7 +17,24 @@ endpoints of this module.
 go get github.com/vitaliy-ukiru/telebot-filter
 ```
 
-## Make base setup
+## Select flow
+
+You can use different method to register handlers.
+These methods separated into packages
+
+- dispatcher
+- routing
+
+You can use both package in one program, but endpoints
+must not intersect.
+The packages do not monitor this behavior.
+
+Read more about their differences and features [here](#structure).
+
+I'll show API of both packages.
+
+### Package dispatcher
+#### Make base setup
 
 ```go
 
@@ -46,7 +63,7 @@ func main() {
 }
 ```
 
-## Setups handlers
+#### Setups handlers
 
 <details>
 <summary>Most likely telebot method</summary>
@@ -66,6 +83,7 @@ dp.Handle(
     /* middlewares like in telebot*/
 )
 ```
+
 </details>
 
 
@@ -83,6 +101,7 @@ dp.Bind(
     }),
 )
 ```
+
 </details>
 
 <details>
@@ -113,7 +132,7 @@ dp.Dispatch(
 Ugly? may be. But you don't use this in normal code.
 </details>
 
-## Add middlewares
+#### Add middlewares
 
 You can add middleware to router object, handler and endpoint.
 
@@ -130,6 +149,47 @@ router.Use() // middlewares only for this router's handlers.
 router.Handle(handler, middleware) // middleware only for handler.
 
 ```
+
+### Package routing
+No need setup.
+
+#### Setups handlers
+```go
+bot.Handle(
+		"/start",
+		routing.New(
+			// deeplink handler
+			// deeplink is URL t.me/<bot_username>/start=<deeplink>
+			// that converted like /start <deeplink>
+			// more into at https://core.telegram.org/api/links#bot-links
+			tf.NewRawHandler(
+				func(c tb.Context) error {
+					deeplink := c.Message().Payload
+					return c.Send("You deeplink: " + deeplink)
+				},
+
+				func(c tb.Context) bool {
+					return c.Message().Payload != ""
+				},
+			),
+
+			// base handler
+			tf.NewRawHandler(func(c tb.Context) error {
+				return c.Send("Hi!")
+			}),
+		),
+
+		userDatabaseMiddleware,
+	)
+```
+**Please note that the order in which handlers are registered is important!**
+With a different order, we would not have been able to even reach the deeplink filter,
+because a basic handler without filters would immediately mark the event as matched.
+
+
+#### Add middlewares
+You can add middlewares only manually like in default telebot.
+
 
 ## Execute bot
 
@@ -150,8 +210,8 @@ Let's go deep.
 This package provides Dispatcher, Router and Builder types.
 They are responsible for routing new updates.
 
+### Dispatcher & router
 
-### Dispatcher  & router
 The dispatcher execute chain of handling event.
 But for register handler uses Router.
 Dispatcher stores inside main router. And you can create children routers.
@@ -194,8 +254,8 @@ Providing an interaction interface convenient for other people's code
 
 Builder is helper for creating handlers
 
-
 ## The routing package
+
 This package is more simplify implementation for filter support.
 Package is full back compatibility with standard telebot code.
 
@@ -204,6 +264,7 @@ It just gives generic handler.
 
 Another catch is registering handlers for one endpoint
 must pass in one call to `bot.Handle`
+
 ```go
 bot.Handle("/start", routing.New(
     ... // your handlers
