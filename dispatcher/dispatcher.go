@@ -21,7 +21,7 @@ type HandlerContainer interface {
 type Dispatcher struct {
 	*Router
 
-	g                    *tb.Group
+	bot                  HandlerContainer
 	wrapped              container.Set[string]
 	handlers             handlerStorage
 	endpointsMiddlewares map[string]*internal.MiddlewareList
@@ -64,7 +64,7 @@ func (d *Dispatcher) wrapEndpoint(endpoint string) {
 		return
 	}
 
-	d.g.Handle(endpoint, d.wrappedEndpointHandler(endpoint))
+	d.bot.Handle(endpoint, d.wrappedEndpointHandler(endpoint))
 	d.wrapped.Add(endpoint)
 }
 
