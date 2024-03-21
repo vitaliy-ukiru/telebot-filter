@@ -38,77 +38,41 @@ func (hs handlerStorage) addRoute(r handlerRoute) (endpoint string) {
 	return
 }
 
-// getAllMiddlewares returns list with middlewares from all parent routers (including current)
-// and handler middlewares. It saves correct structure of execution middlewares.
+// overAllMiddlewares returns iterator with middlewares
+// from all parent routers (including current) and handler
+// middlewares.
+// It saves correct order of execution middlewares.
 //
 // For example
 //
-//	topRouter with middleware [A, B, C]
-//	r2 is child of topRouter with middlewares [X, Y, Z]
+//	root router with middleware [A, B, C]
+//	r2 is child of root with middlewares [X, Y, Z]
 //	handler routers is [1, 2]
 //	execution chain will [A -> B -> C -> X -> Y -> Z -> 1 -> 2]
-func (hr handlerRoute) getAllMiddlewares() *internal.MiddlewareList {
-	l := new(internal.MiddlewareList)
-	getMiddlewares(l, hr.router)
-	l.ExtendSlice(hr.Middlewares)
-	return l
-}
-
-// getMiddlewares recursively adds all middleware to the list.
-func getMiddlewares(l *internal.MiddlewareList, r *Router) {
-	// base case for stop.
-	if r == nil {
-		return
-	}
-	// fetch middlewares from top routers
-	if r.parent != nil {
-		getMiddlewares(l, r.parent)
-	}
-	l.Extend(r.mw)
-}
-
-func (hr handlerRoute) iterateMiddlewares(yield internal.Yield) {
+func (hr handlerRoute) overAllMiddlewares(yield internal.Yield) {
 	for i := len(hr.Middlewares) - 1; i >= 0; i-- {
 		if !yield(hr.Middlewares[i]) {
 			return
 		}
 	}
 
-	iterMwChain(hr.router, yield)
-}
-
-func iterMwChain(r *Router, yield internal.Yield) (next bool) {
-	if r == nil {
-		return false
-	}
-
-	for e := r.mw.Back(); e != nil; e = e.Prev() {
-		if !yield(e.Value) {
-			return false
+	for r := hr.router; r != nil; r = r.parent {
+		// don't use List.IterateBackward, because iter.Seq
+		// must be without return values.
+		// But without return value we can't catch stop signal from yield.
+		for e := r.mw.Back(); e != nil; e = e.Prev() {
+			if !yield(e.Value) {
+				return
+			}
 		}
-	}
 
-	if r.parent != nil {
-		if !iterMwChain(r.parent, yield) {
-			return false
-		}
 	}
-	return true
 }
 
 func (hr handlerRoute) run(c tb.Context) error {
 	callback := internal.ApplyMiddleware(
 		hr.Route.Handler.Execute,
-		hr.getAllMiddlewares(),
-	)
-
-	return callback(c)
-}
-
-func (hr handlerRoute) runIterator(c tb.Context) error {
-	callback := internal.IterateApply(
-		hr.Route.Handler.Execute,
-		hr.iterateMiddlewares,
+		hr.overAllMiddlewares,
 	)
 
 	return callback(c)
