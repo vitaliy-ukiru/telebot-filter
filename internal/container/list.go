@@ -69,3 +69,11 @@ func (e *Element[T]) Next() *Element[T] {
 func (e *Element[T]) Prev() *Element[T] {
 	return e.prev
 }
+
+func (l *List[T]) IterateBackward(yield func(value T) (next bool)) {
+	for e := l.tail; e != nil; e = e.prev {
+		if !yield(e.Value) {
+			return
+		}
+	}
+}

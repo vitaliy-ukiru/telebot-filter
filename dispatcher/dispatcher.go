@@ -82,7 +82,7 @@ func (d *Dispatcher) wrappedEndpointHandler(endpoint string) tb.HandlerFunc {
 	return func(c tb.Context) error {
 		mw := d.endpointsMiddlewares[endpoint]
 		if mw != nil && mw.Len() > 0 {
-			fn = internal.ApplyMiddleware(fn, mw)
+			fn = internal.ApplyMiddleware(fn, mw.IterateBackward)
 		}
 		return fn(c)
 	}
