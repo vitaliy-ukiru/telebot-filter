@@ -16,3 +16,15 @@ func ApplyMiddleware(h tb.HandlerFunc, m *MiddlewareList) tb.HandlerFunc {
 	}
 	return h
 }
+
+type Yield = func(mw tb.MiddlewareFunc) (next bool)
+
+type Iter = func(yield Yield)
+
+func IterateApply(h tb.HandlerFunc, iterator Iter) tb.HandlerFunc {
+	iterator(func(mw tb.MiddlewareFunc) (next bool) {
+		h = mw(h)
+		return true
+	})
+	return h
+}

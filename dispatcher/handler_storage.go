@@ -67,10 +67,48 @@ func getMiddlewares(l *internal.MiddlewareList, r *Router) {
 	l.Extend(r.mw)
 }
 
+func (hr handlerRoute) iterateMiddlewares(yield internal.Yield) {
+	for i := len(hr.Middlewares) - 1; i >= 0; i-- {
+		if !yield(hr.Middlewares[i]) {
+			return
+		}
+	}
+
+	iterMwChain(hr.router, yield)
+}
+
+func iterMwChain(r *Router, yield internal.Yield) (next bool) {
+	if r == nil {
+		return false
+	}
+
+	for e := r.mw.Back(); e != nil; e = e.Prev() {
+		if !yield(e.Value) {
+			return false
+		}
+	}
+
+	if r.parent != nil {
+		if !iterMwChain(r.parent, yield) {
+			return false
+		}
+	}
+	return true
+}
+
 func (hr handlerRoute) run(c tb.Context) error {
 	callback := internal.ApplyMiddleware(
-		hr.Execute,
+		hr.Route.Handler.Execute,
 		hr.getAllMiddlewares(),
+	)
+
+	return callback(c)
+}
+
+func (hr handlerRoute) runIterator(c tb.Context) error {
+	callback := internal.IterateApply(
+		hr.Route.Handler.Execute,
+		hr.iterateMiddlewares,
 	)
 
 	return callback(c)
