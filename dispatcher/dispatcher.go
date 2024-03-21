@@ -9,6 +9,11 @@ import (
 	tb "gopkg.in/telebot.v3"
 )
 
+type HandlerContainer interface {
+	Use(mw ...tb.MiddlewareFunc)
+	Handle(endpoint any, h tb.HandlerFunc, mw ...tb.MiddlewareFunc)
+}
+
 // Dispatcher is base object for handling updates.
 // It gates between raw telebot bot and filters support.
 //
@@ -22,9 +27,9 @@ type Dispatcher struct {
 	endpointsMiddlewares map[string]*internal.MiddlewareList
 }
 
-func NewDispatcher(g *tb.Group) *Dispatcher {
+func NewDispatcher(bot HandlerContainer) *Dispatcher {
 	dp := &Dispatcher{
-		g:                    g,
+		bot:                  bot,
 		handlers:             make(handlerStorage),
 		wrapped:              make(container.Set[string]),
 		endpointsMiddlewares: make(map[string]*internal.MiddlewareList),
