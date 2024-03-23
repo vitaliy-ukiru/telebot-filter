@@ -70,8 +70,8 @@ func main() {
 
 ```go
 dp.Handle(
-    telefilter.NewRawHandler(
-        "/start",
+    "/start",
+    telefilter.NewRawHandler(   
         func(c tb.Context) error {
             return c.Send("Hi")
         },
