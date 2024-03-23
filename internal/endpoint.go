@@ -9,6 +9,6 @@ func ExtractRawEndpoint(e any) string {
 	case tb.CallbackEndpoint:
 		return end.CallbackUnique()
 	default:
-		panic("fsm: telebot: unsupported endpoint")
+		panic("telebot-filter: unsupported endpoint")
 	}
 }
