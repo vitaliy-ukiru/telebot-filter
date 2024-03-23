@@ -47,7 +47,7 @@ func (hs handlerStorage) addRoute(r handlerRoute) (endpoint string) {
 //
 //	root router with middleware [A, B, C]
 //	r2 is child of root with middlewares [X, Y, Z]
-//	handler routers is [1, 2]
+//	handler's middlewares is [1, 2]
 //	execution chain will [A -> B -> C -> X -> Y -> Z -> 1 -> 2]
 func (hr handlerRoute) overAllMiddlewares(yield internal.Yield) {
 	for i := len(hr.Middlewares) - 1; i >= 0; i-- {
