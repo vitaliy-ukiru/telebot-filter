@@ -19,7 +19,7 @@ type HandlerContainer interface {
 //
 // Handler routing methods in [Router]. Dispatcher have root router.
 type Dispatcher struct {
-	*Router
+	router *Router
 
 	bot                  HandlerContainer
 	wrapped              container.Set[string]
@@ -34,7 +34,7 @@ func NewDispatcher(bot HandlerContainer) *Dispatcher {
 		wrapped:              make(container.Set[string]),
 		endpointsMiddlewares: make(map[string]*internal.MiddlewareList),
 	}
-	dp.Router = newRouter(dp, nil)
+	dp.router = newRouter(dp, nil)
 	return dp
 }
 
@@ -95,4 +95,30 @@ func (d *Dispatcher) wrappedEndpointHandler(endpoint string) tb.HandlerFunc {
 		}
 		return fn(c)
 	}
+}
+
+// Bind builds and add handler from builder to root router.
+func (d *Dispatcher) Bind(b *Builder) {
+	d.router.Bind(b)
+}
+
+// Handle manually adds handler with middlewares to root router
+// almost like telebot.
+func (d *Dispatcher) Handle(endpoint any, handler tf.Handler, mw ...tb.MiddlewareFunc) {
+	d.router.Handle(endpoint, handler, mw...)
+}
+
+func (d *Dispatcher) Dispatch(route tf.Route) {
+	d.router.Dispatch(route)
+}
+
+// Use middlewares for handlers to all handler, because
+// saves it to root router.
+func (d *Dispatcher) Use(mw ...tb.MiddlewareFunc) {
+	d.router.Use(mw...)
+}
+
+// NewRouter creates new router from root.
+func (d *Dispatcher) NewRouter() *Router {
+	return d.router.NewRouter()
 }
