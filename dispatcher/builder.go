@@ -40,5 +40,8 @@ func (b *Builder) Do(h tb.HandlerFunc) *Builder {
 }
 
 func (b *Builder) Build() tf.Route {
+	if b.h.Callback == nil {
+		panic("telebot-filter: builder: callback must be not nil")
+	}
 	return tf.NewRoute(b.endpoint, b.h, b.mw...)
 }

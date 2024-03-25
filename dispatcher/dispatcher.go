@@ -69,6 +69,10 @@ func (d *Dispatcher) wrapEndpoint(endpoint string) {
 }
 
 func (d *Dispatcher) addRoute(route tf.Route, router *Router) {
+	if route.Handler == nil {
+		panic("telebot-filter: dispatcher: handler must be not nil")
+	}
+
 	endpoint := d.handlers.addRoute(handlerRoute{
 		Route:  route,
 		router: router,
