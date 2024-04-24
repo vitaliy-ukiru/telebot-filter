@@ -5,35 +5,41 @@ import (
 	tb "gopkg.in/telebot.v3"
 )
 
-// Builder for handler.
+// Builder helps for connect handler function, filters,
+// endpoint and middlewares.
 //
-// For setup built handler use [Router.Bind]
-// or this (Bind) method from dispatcher instance.
+// For create Builder use [Dispatcher.B] or [NewBuilder].
 type Builder struct {
 	endpoint any
 	h        tf.RawHandler
 	mw       []tb.MiddlewareFunc
 }
 
+// NewBuilder creates new builder with endpoint.
+// You can override endpoint with [Builder.On] method.
 func NewBuilder(endpoint any) *Builder {
 	return &Builder{endpoint: endpoint}
 }
 
+// Use adds middlewares for handler.
 func (b *Builder) Use(mw ...tb.MiddlewareFunc) *Builder {
 	b.mw = append(b.mw, mw...)
 	return b
 }
 
+// On sets endpoint.
 func (b *Builder) On(e any) *Builder {
 	b.endpoint = e
 	return b
 }
 
+// Filter appends filters to builder.
 func (b *Builder) Filter(filters ...tf.Filter) *Builder {
 	b.h.Filters = append(b.h.Filters, filters...)
 	return b
 }
 
+// Do sets callback.
 func (b *Builder) Do(h tb.HandlerFunc) *Builder {
 	b.h.Callback = h
 	return b
