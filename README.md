@@ -156,11 +156,11 @@ router.Handle(handler, middleware) // middleware only for handler.
 Simplest way:
 ```go
 bot.Handle(tele.OnText, routing.New(
-	tf.NewHandler(
+	tf.NewRawHandler(
 		handleHi,
 		filterHiText,
 	),
-	tf.NewHandler(
+	tf.NewRawHandler(
 		handleWakeUpInGroup,
 		filterGroup,
 		filterWakeUpText,
@@ -185,31 +185,31 @@ route.Add(handlerStartTwice) // it will added in route
 #### Setups handlers
 ```go
 bot.Handle(
-		"/start",
-		routing.New(
-			// deeplink handler
-			// deeplink is URL t.me/<bot_username>/start=<deeplink>
-			// that converted like /start <deeplink>
-			// more into at https://core.telegram.org/api/links#bot-links
-			tf.NewRawHandler(
-				func(c tb.Context) error {
-					deeplink := c.Message().Payload
-					return c.Send("You deeplink: " + deeplink)
-				},
+    "/start",
+    routing.New(
+        // deeplink handler
+        // deeplink is URL t.me/<bot_username>/start=<deeplink>
+        // that converted like /start <deeplink>
+        // more into at https://core.telegram.org/api/links#bot-links
+        tf.NewRawHandler(
+            func(c tb.Context) error {
+                deeplink := c.Message().Payload
+                return c.Send("You deeplink: " + deeplink)
+            },
 
-				func(c tb.Context) bool {
-					return c.Message().Payload != ""
-				},
-			),
+            func(c tb.Context) bool {
+                return c.Message().Payload != ""
+            },
+        ),
 
-			// base handler
-			tf.NewRawHandler(func(c tb.Context) error {
-				return c.Send("Hi!")
-			}),
-		),
+        // base handler
+        tf.NewRawHandler(func(c tb.Context) error {
+            return c.Send("Hi!")
+        }),
+    ),
 
-		userDatabaseMiddleware,
-	)
+    userDatabaseMiddleware,
+)
 ```
 **Please note that the order in which handlers are registered is important!**
 With a different order, we would not have been able to even reach the deeplink filter,
