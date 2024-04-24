@@ -30,3 +30,9 @@ func ExampleNew() {
 		),
 	))
 }
+
+func ExampleRoute_Add() {
+	var route routing.Route
+	route.Add(tf.NewRawHandler(handleHi, filterHiText))
+	bot.Handle(tele.OnText, route.Handler)
+}

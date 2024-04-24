@@ -25,3 +25,41 @@ func New(routes ...tf.Handler) tb.HandlerFunc {
 		return nil
 	}
 }
+
+// Route is container for handler.
+// Difference with [New] function is that it can
+// add handlers in runtime.
+//
+// You can install route.Handler to telebot and after
+// add handlers.
+type Route struct {
+	handlers *container.List[tf.Handler]
+}
+
+func (r *Route) Add(handler tf.Handler) {
+	if r.handlers == nil {
+		r.handlers = new(container.List[tf.Handler])
+	}
+
+	if handler == nil {
+		panic("routing: handler must be not nil")
+	}
+
+	r.handlers.Insert(handler)
+}
+
+func (r *Route) Handler(c tb.Context) error {
+	if r.handlers == nil {
+		return nil
+	}
+
+	for e := r.handlers.Front(); e != nil; e = e.Next() {
+		h := e.Value
+		if !h.Check(c) {
+			continue
+		}
+
+		return h.Execute(c)
+	}
+	return nil
+}
