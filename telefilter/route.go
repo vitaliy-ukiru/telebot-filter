@@ -18,3 +18,11 @@ type Route struct {
 func NewRoute(endpoint any, handler Handler, middlewares ...tb.MiddlewareFunc) Route {
 	return Route{Handler: handler, Endpoint: endpoint, Middlewares: middlewares}
 }
+
+func (r Route) Execute(c tb.Context) error {
+	h := r.Handler.Execute
+	for i := len(r.Middlewares) - 1; i >= 0; i-- {
+		h = r.Middlewares[i](h)
+	}
+	return h(c)
+}
