@@ -60,8 +60,10 @@ func (*Dispatcher) B(endpoint any) *Builder {
 
 var errRouterNotMatch = errors.New("not find matching handler")
 
-// UseOn registers middlewares on given endpoint like tb.OnText, etc.
-func (d *Dispatcher) UseOn(onEndpoint any, mw ...tb.MiddlewareFunc) {
+// UseOuter registers middlewares on given endpoint like tb.OnText, etc.
+//
+// It will be execute middlewares before filters.
+func (d *Dispatcher) UseOuter(onEndpoint any, mw ...tb.MiddlewareFunc) {
 	endpoint := internal.ExtractRawEndpoint(onEndpoint)
 
 	list := d.endpointsMiddlewares[endpoint]
