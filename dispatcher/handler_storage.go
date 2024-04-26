@@ -71,6 +71,9 @@ func (hr handlerRoute) overAllMiddlewares(yield internal.Yield) {
 
 func (hr handlerRoute) run(c tb.Context) error {
 	callback := internal.ApplyMiddleware(
+		// wrap Handler because route itself
+		// adds middleware to the call.
+		// but in this case it will add more call nesting
 		hr.Route.Handler.Execute,
 		hr.overAllMiddlewares,
 	)
