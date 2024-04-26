@@ -3,7 +3,9 @@
 //
 // But all handlers for endpoint must be installed in one bot.Handle call.
 // Else it will override like in default telebot.
-// Middlewares also will work like in telebot.
+//
+// You can add middlewares to current handler via using [tf.Route].
+// These middlewares will execute after handler test, but before Handler.Execute
 package routing
 
 import (

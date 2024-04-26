@@ -15,6 +15,8 @@ var (
 	handleWakeUpInGroup tele.HandlerFunc
 	filterGroup         tf.Filter
 	filterWakeUpText    tf.Filter
+
+	middlewareStatistic tele.MiddlewareFunc
 )
 
 func ExampleNew() {
@@ -23,6 +25,22 @@ func ExampleNew() {
 			handleHi,
 			filterHiText,
 		),
+		tf.NewRawHandler(
+			handleWakeUpInGroup,
+			filterGroup,
+			filterWakeUpText,
+		),
+	))
+}
+
+func ExampleNew_middlewares() {
+	bot.Handle(tele.OnText, routing.New(
+		tf.NewRoute(
+			nil, // passing any value, it doesn't matter
+			tf.NewRawHandler(handleHi, filterHiText),
+			middlewareStatistic, // will execute only after filters
+		),
+
 		tf.NewRawHandler(
 			handleWakeUpInGroup,
 			filterGroup,

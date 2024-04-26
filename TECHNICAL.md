@@ -52,7 +52,18 @@ Builder is helper for creating handlers
 This package is more simplify implementation for filter support.
 Package is full back compatibility with standard telebot code.
 
-But this package don't provide middlewares as in the dispatcher package.
+This package don't provide middlewares as in the dispatcher package.
+But you can use `telefilter.Route` for use middlewares on current handler.
+```go
+bot.Handle("/test", routing.New(
+    tf.NewRoute(
+		nil, // endpoint doesn't matter,
+		handler,
+		middlewares...
+    ),
+))
+```
+
 It just gives generic handler.
 
 Another catch is registering handlers for one endpoint
