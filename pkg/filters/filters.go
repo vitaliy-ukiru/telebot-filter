@@ -1,3 +1,6 @@
+// Package filters provides simplest operations
+// with filters and sets of builtin filters
+// for common cases in nested packages.
 package filters
 
 import (

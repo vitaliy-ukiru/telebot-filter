@@ -1,3 +1,4 @@
+// Package message provides filters for checks message.
 package message
 
 import (
