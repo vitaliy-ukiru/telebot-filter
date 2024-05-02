@@ -74,6 +74,11 @@ func (d *Dispatcher) UseOnEndpoint(onEndpoint any, mw ...tb.MiddlewareFunc) {
 	list.ExtendSlice(mw)
 }
 
+// Outer registers middleware that must be executed before check filters.
+func (d *Dispatcher) Outer(mw ...tb.MiddlewareFunc) {
+	d.bot.Use(mw...)
+}
+
 // wrapEndpoint add handler to telebot with "cache".
 // We may not add to those endpoint that are already wrapped.
 func (d *Dispatcher) wrapEndpoint(endpoint string) {
