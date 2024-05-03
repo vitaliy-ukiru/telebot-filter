@@ -1,7 +1,6 @@
 package telefilter
 
 import (
-	fpkg "github.com/vitaliy-ukiru/telebot-filter/pkg/filters"
 	tb "gopkg.in/telebot.v3"
 )
 
@@ -37,32 +36,21 @@ func NewRoute(endpoint any, handler Handler, middlewares ...tb.MiddlewareFunc) R
 // RawHandler is builtin handler with separated
 // filters and callback.
 type RawHandler struct {
-	Filter   Filter
+	Filters  []Filter
 	Callback tb.HandlerFunc
 }
 
-// NewRawHandler is constructor for raw handler
-// with some sugar for filters.
-//
-// It joins filter with 'and' operator.
-// If you don't pass filter it will handle any update.
 func NewRawHandler(callback tb.HandlerFunc, filters ...Filter) RawHandler {
-	var f Filter
-	if n := len(filters); n > 0 {
-		if n == 1 {
-			f = filters[0]
-		} else {
-			f = fpkg.All(filters...)
-		}
-	}
-	return RawHandler{Filter: f, Callback: callback}
+	return RawHandler{Filters: filters, Callback: callback}
 }
 
 func (h RawHandler) Check(c tb.Context) bool {
-	if h.Filter == nil {
-		return true
+	for _, f := range h.Filters {
+		if !f(c) {
+			return false
+		}
 	}
-	return h.Filter(c)
+	return true
 }
 
 func (h RawHandler) Execute(c tb.Context) error {

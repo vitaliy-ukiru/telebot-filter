@@ -9,14 +9,14 @@ import (
 var (
 	router      *dispatcher.Router
 	handleFunc  telebot.HandlerFunc
-	filter      tf.Filter
+	filters     []tf.Filter
 	middlewares []telebot.MiddlewareFunc
 )
 
 func ExampleRouter_Handle() {
 	router.Handle(
 		"/start",
-		tf.NewRawHandler(handleFunc, filter),
+		tf.NewRawHandler(handleFunc, filters...),
 		middlewares...,
 	)
 }
@@ -25,7 +25,7 @@ func ExampleRouter_Bind() {
 	router.Bind(
 		dispatcher.
 			NewBuilder("/start").
-			Filter(filter).
+			Filter(filters...).
 			Do(handleFunc).
 			Use(middlewares...),
 	)
@@ -35,7 +35,7 @@ func ExampleRouter_Dispatch() {
 	router.Dispatch(
 		tf.NewRoute(
 			"/start",
-			tf.NewRawHandler(handleFunc, filter),
+			tf.NewRawHandler(handleFunc, filters...),
 			middlewares...,
 		),
 	)
@@ -45,7 +45,7 @@ func ExampleRouter_Dispatch_withoutConstructor() {
 	router.Dispatch(
 		tf.Route{
 			Endpoint:    "/start",
-			Handler:     tf.NewRawHandler(handleFunc, filter),
+			Handler:     tf.NewRawHandler(handleFunc, filters...),
 			Middlewares: middlewares,
 		},
 	)
