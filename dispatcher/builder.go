@@ -11,8 +11,7 @@ import (
 // For create Builder use [Dispatcher.B] or [NewBuilder].
 type Builder struct {
 	endpoint any
-	filters  []tf.Filter
-	callback tb.HandlerFunc
+	h        tf.RawHandler
 	mw       []tb.MiddlewareFunc
 }
 
@@ -36,23 +35,19 @@ func (b *Builder) On(e any) *Builder {
 
 // Filter appends filters to builder.
 func (b *Builder) Filter(filters ...tf.Filter) *Builder {
-	b.filters = append(b.filters, filters...)
+	b.h.Filters = append(b.h.Filters, filters...)
 	return b
 }
 
 // Do sets callback.
 func (b *Builder) Do(h tb.HandlerFunc) *Builder {
-	b.callback = h
+	b.h.Callback = h
 	return b
 }
 
 func (b *Builder) Build() tf.Route {
-	if b.callback == nil {
+	if b.h.Callback == nil {
 		panic("telebot-filter: builder: callback must be not nil")
 	}
-	return tf.NewRoute(
-		b.endpoint,
-		tf.NewRawHandler(b.callback, b.filters...),
-		b.mw...,
-	)
+	return tf.NewRoute(b.endpoint, b.h, b.mw...)
 }
