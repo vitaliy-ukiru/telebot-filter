@@ -3,14 +3,14 @@ package dispatcher_test
 import (
 	"github.com/vitaliy-ukiru/telebot-filter/dispatcher"
 	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
-	"gopkg.in/telebot.v3"
+	tb "gopkg.in/telebot.v3"
 )
 
 var (
 	router      *dispatcher.Router
-	handleFunc  telebot.HandlerFunc
+	handleFunc  tb.HandlerFunc
 	filters     []tf.Filter
-	middlewares []telebot.MiddlewareFunc
+	middlewares []tb.MiddlewareFunc
 )
 
 func ExampleRouter_Handle() {
