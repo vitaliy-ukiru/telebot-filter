@@ -41,3 +41,10 @@ func (s *StringPipeline) execute(ctx tele.Context) (string, bool) {
 func (s *StringPipeline) predicate(f ItemFilter[string]) tf.Filter {
 	return newPredicate(s.execute, f)
 }
+
+func (s *StringPipeline) Copy() *StringPipeline {
+	return &StringPipeline{
+		start: s.start,
+		list:  s.list.Copy(),
+	}
+}
