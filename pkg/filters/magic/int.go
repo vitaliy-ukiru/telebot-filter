@@ -9,10 +9,6 @@ type IntFilter[T constraints.Integer] struct {
 	getter ItemGetter[T]
 }
 
-func newIntFilter[T constraints.Integer](getter ItemGetter[T]) *IntFilter[T] {
-	return &IntFilter[T]{getter: getter}
-}
-
 func (i IntFilter[T]) predicate(filter ItemFilter[T]) tf.Filter {
 	return newPredicate(i.getter, filter)
 }
