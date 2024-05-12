@@ -38,7 +38,7 @@ func (s *StringPipeline) execute(ctx tele.Context) (string, bool) {
 	return value, true
 }
 
-func (s *StringPipeline) predicate(f ItemFilter[string]) tf.Filter {
+func (s *StringPipeline) On(f ItemFilter[string]) tf.Filter {
 	return newPredicate(s.execute, f)
 }
 
