@@ -68,7 +68,9 @@ func (s *StringPipeline) Regexp(pattern regexp.Regexp) tf.Filter {
 }
 
 func (s *StringPipeline) Len() NumberFilter[int] {
-	return newNumberFilter(joinGetter(s.execute, len))
+	return newNumberFilter(joinGetter(s.execute, func(s string) int {
+		return len(s)
+	}))
 }
 
 func (s *StringPipeline) All(filtersFactories ...func(s *StringPipeline) tf.Filter) tf.Filter {
