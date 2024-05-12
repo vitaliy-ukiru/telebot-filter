@@ -1,6 +1,7 @@
 package magic
 
 import (
+	"regexp"
 	"slices"
 	"strings"
 
@@ -60,4 +61,28 @@ func (s *StringPipeline) In(values ...string) tf.Filter {
 	return s.On(func(s string) bool {
 		return slices.Contains(values, s)
 	})
+}
+
+func (s *StringPipeline) Regexp(pattern regexp.Regexp) tf.Filter {
+	return s.On(pattern.MatchString)
+}
+
+func (s *StringPipeline) Len() NumberFilter[int] {
+	return newNumberFilter(joinGetter(s.execute, len))
+}
+
+func (s *StringPipeline) All(filtersFactories ...func(s *StringPipeline) tf.Filter) tf.Filter {
+	filters := make([]tf.Filter, 0, len(filtersFactories))
+	for _, factory := range filtersFactories {
+		filters = append(filters, factory(s.Copy()))
+	}
+	return And(filters...)
+}
+
+func (s *StringPipeline) Any(filtersFactories ...func(s *StringPipeline) tf.Filter) tf.Filter {
+	filters := make([]tf.Filter, 0, len(filtersFactories))
+	for _, factory := range filtersFactories {
+		filters = append(filters, factory(s.Copy()))
+	}
+	return Or(filters...)
 }
