@@ -11,11 +11,6 @@ type ItemFilter[T any] func(T) bool
 
 type ItemGetter[T any] func(ctx tele.Context) (T, bool)
 
-type ItemPredicate[T any] struct {
-	getter    ItemGetter[T]
-	predicate ItemFilter[T]
-}
-
 func newPredicate[T any](getter ItemGetter[T], predicate ItemFilter[T]) tf.Filter {
 	return func(c tele.Context) bool {
 		val, ok := getter(c)
