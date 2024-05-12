@@ -105,3 +105,7 @@ func (s *StringPipeline) TrimFunc(f func(rune) bool) *StringPipeline {
 	})
 	return s
 }
+
+func (s *StringPipeline) AsNumber() NumberConvertor {
+	return NumberConvertor{getter: s.execute}
+}
