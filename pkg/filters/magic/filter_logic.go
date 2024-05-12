@@ -9,8 +9,8 @@ type UserMagicFilter struct {
 	getter ItemGetter[*tele.User]
 }
 
-func (u UserMagicFilter) ID() IntFilter[int64] {
-	return IntFilter[int64]{
+func (u UserMagicFilter) ID() NumberFilter[int64] {
+	return NumberFilter[int64]{
 		getter: joinGetter(u.getter, func(user *tele.User) int64 {
 			return user.ID
 		}),

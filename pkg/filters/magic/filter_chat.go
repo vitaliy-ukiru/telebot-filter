@@ -6,8 +6,8 @@ type ChatMagicFilter struct {
 	getter ItemGetter[*tele.Chat]
 }
 
-func (c ChatMagicFilter) ID() IntFilter[int64] {
-	return IntFilter[int64]{
+func (c ChatMagicFilter) ID() NumberFilter[int64] {
+	return NumberFilter[int64]{
 		getter: joinGetter(c.getter, func(chat *tele.Chat) int64 {
 			return chat.ID
 		}),
