@@ -77,3 +77,13 @@ func (l *List[T]) IterateBackward(yield func(value T) (next bool)) {
 		}
 	}
 }
+
+func (l *List[T]) Copy() *List[T] {
+	newList := new(List[T])
+
+	for e := l.head; e != nil; e = e.next {
+		newList.Insert(e.Value)
+	}
+
+	return newList
+}
