@@ -9,6 +9,10 @@ type UserMagicFilter struct {
 	getter ItemGetter[*tele.User]
 }
 
+func newUserMagicFilter(getter ItemGetter[*tele.User]) UserMagicFilter {
+	return UserMagicFilter{getter: getter}
+}
+
 func (u UserMagicFilter) ID() NumberFilter[int64] {
 	return NumberFilter[int64]{
 		getter: joinGetter(u.getter, func(user *tele.User) int64 {
@@ -75,21 +79,16 @@ func (u UserMagicFilter) AddedToMenu(status bool) tf.Filter {
 	)
 }
 
-func boolFilter(want bool) ItemFilter[bool] {
-	return func(got bool) bool {
-		return got == want
-	}
+func (u UserMagicFilter) Usernames() ArrayMagicFilter[[]string, string] {
+	return newArrayFilter(joinGetter(u.getter, func(user *tele.User) []string {
+		return user.Usernames
+	}))
 }
 
-//func (s UserMagicFilter) Usernames()         []string
+func (u UserMagicFilter) All(factories ...FilterFactory[UserMagicFilter]) tf.Filter {
+	return logicBranch(u, And, factories)
+}
 
-func joinGetter[T, U any](a ItemGetter[T], b func(T) U) ItemGetter[U] {
-	return func(ctx tele.Context) (U, bool) {
-		t, ok := a(ctx)
-		if !ok {
-			var zero U
-			return zero, false
-		}
-		return b(t), true
-	}
+func (u UserMagicFilter) Any(factories ...FilterFactory[UserMagicFilter]) tf.Filter {
+	return logicBranch(u, Or, factories)
 }
