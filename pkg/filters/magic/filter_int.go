@@ -60,3 +60,11 @@ func (i NumberFilter[T]) NotEqual(n T) tf.Filter {
 func (i NumberFilter[T]) On(filter ItemFilter[T]) tf.Filter {
 	return i.predicate(filter)
 }
+
+func (i NumberFilter[T]) All(factories ...FilterFactory[NumberFilter[T]]) tf.Filter {
+	return logicBranch(i, And, factories)
+}
+
+func (i NumberFilter[T]) Any(factories ...FilterFactory[NumberFilter[T]]) tf.Filter {
+	return logicBranch(i, Or, factories)
+}

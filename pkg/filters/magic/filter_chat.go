@@ -1,9 +1,16 @@
 package magic
 
-import tele "gopkg.in/telebot.v3"
+import (
+	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
+	tele "gopkg.in/telebot.v3"
+)
 
 type ChatMagicFilter struct {
 	getter ItemGetter[*tele.Chat]
+}
+
+func newChatFilter(getter ItemGetter[*tele.Chat]) ChatMagicFilter {
+	return ChatMagicFilter{getter: getter}
 }
 
 func (c ChatMagicFilter) ID() NumberFilter[int64] {
@@ -37,4 +44,12 @@ func (c ChatMagicFilter) Type() CompareFilter[tele.ChatType] {
 	return newCompareFilter(joinGetter(c.getter, func(chat *tele.Chat) tele.ChatType {
 		return chat.Type
 	}))
+}
+
+func (c ChatMagicFilter) All(factories ...FilterFactory[ChatMagicFilter]) tf.Filter {
+	return logicBranch(c, And, factories)
+}
+
+func (c ChatMagicFilter) Any(factories ...FilterFactory[ChatMagicFilter]) tf.Filter {
+	return logicBranch(c, Or, factories)
 }
