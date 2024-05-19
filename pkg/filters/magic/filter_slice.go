@@ -18,12 +18,6 @@ func (s SliceMagicFilter[S, E]) Len() NumberFilter[int] {
 	}))
 }
 
-func (s SliceMagicFilter[S, E]) NotEmpty() tf.Filter {
-	return newPredicate(s.getter, func(s S) bool {
-		return len(s) > 0
-	})
-}
-
 func (s SliceMagicFilter[S, E]) AtLeastOne(predicate ItemFilter[E]) tf.Filter {
 	return newPredicate(s.getter, func(s S) bool {
 		for _, e := range s {
