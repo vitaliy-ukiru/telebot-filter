@@ -47,13 +47,12 @@ func Update(fn ItemFilter[tele.Update]) tf.Filter {
 	)
 }
 
-func Message(fn ItemFilter[*tele.Message]) tf.Filter {
-	return newPredicate(
+func Message() MessageFilter {
+	return newMessageFilter(
 		func(ctx tele.Context) (*tele.Message, bool) {
 			x := ctx.Message()
 			return x, x != nil
 		},
-		fn,
 	)
 }
 
