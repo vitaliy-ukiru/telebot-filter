@@ -79,7 +79,7 @@ func (u UserMagicFilter) AddedToMenu(status bool) tf.Filter {
 	)
 }
 
-func (u UserMagicFilter) Usernames() ArrayMagicFilter[[]string, string] {
+func (u UserMagicFilter) Usernames() SliceMagicFilter[[]string, string] {
 	return newArrayFilter(joinGetter(u.getter, func(user *tele.User) []string {
 		return user.Usernames
 	}))
