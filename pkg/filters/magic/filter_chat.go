@@ -7,11 +7,9 @@ type ChatMagicFilter struct {
 }
 
 func (c ChatMagicFilter) ID() NumberFilter[int64] {
-	return NumberFilter[int64]{
-		getter: joinGetter(c.getter, func(chat *tele.Chat) int64 {
-			return chat.ID
-		}),
-	}
+	return newNumberFilter(joinGetter(c.getter, func(chat *tele.Chat) int64 {
+		return chat.ID
+	}))
 }
 func (c ChatMagicFilter) FirstName() *StringPipeline {
 	return newStringPipeline(joinGetter(c.getter, func(chat *tele.Chat) string {
