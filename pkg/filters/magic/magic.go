@@ -155,3 +155,10 @@ func Topic(fn ItemFilter[*tele.Topic]) tf.Filter {
 		fn,
 	)
 }
+
+func Entities() EntitiesMagicFilter {
+	return newEntitiesFilter(func(ctx tele.Context) (tele.Entities, bool) {
+		e := ctx.Entities()
+		return e, len(e) > 0
+	})
+}
