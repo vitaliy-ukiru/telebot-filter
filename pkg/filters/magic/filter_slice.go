@@ -28,3 +28,7 @@ func (s SliceMagicFilter[S, E]) AtLeastOne(predicate ItemFilter[E]) tf.Filter {
 		return false
 	})
 }
+
+func (s SliceMagicFilter[S, E]) On(filter ItemFilter[S]) tf.Filter {
+	return newPredicate(s.getter, filter)
+}
