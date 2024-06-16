@@ -19,6 +19,13 @@ func Data() *StringPipeline {
 	}}
 }
 
+func Args() SliceMagicFilter[[]string, string] {
+	return newArrayFilter(func(ctx tele.Context) ([]string, bool) {
+		args := ctx.Args()
+		return args, len(args) > 0
+	})
+}
+
 func Sender() UserMagicFilter {
 	return UserMagicFilter{
 		getter: func(ctx tele.Context) (*tele.User, bool) {
