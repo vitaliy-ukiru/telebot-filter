@@ -4,6 +4,7 @@ go 1.21.0
 
 require (
 	github.com/stretchr/testify v1.8.0
+	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842
 	gopkg.in/telebot.v3 v3.2.1
 )
 
