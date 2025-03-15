@@ -1,5 +1,25 @@
 # telebot-filter
-
+<!-- TOC -->
+* [telebot-filter](#telebot-filter)
+* [Motivation](#motivation)
+* [Quick Start](#quick-start)
+  * [Install module](#install-module)
+  * [Select flow](#select-flow)
+    * [Package dispatcher](#package-dispatcher)
+      * [Make base setup](#make-base-setup)
+      * [Setups handlers](#setups-handlers)
+      * [Add middlewares](#add-middlewares)
+    * [Package routing](#package-routing)
+      * [Setups handlers](#setups-handlers-1)
+      * [Add middlewares](#add-middlewares-1)
+  * [Execute bot](#execute-bot)
+* [Migrate to v2](#migrate-to-v2)
+  * [Get new telebot version](#get-new-telebot-version)
+  * [Delete builder usage](#delete-builder-usage)
+  * [Delete multibot usage](#delete-multibot-usage)
+  * [Update RawHandler bindings](#update-rawhandler-bindings)
+* [Technical information](#technical-information)
+<!-- TOC -->
 # Motivation
 
 This module provides use telebot module but with filters
@@ -34,6 +54,7 @@ Read more about their differences and features [here](#structure).
 I'll show API of both packages.
 
 ### Package dispatcher
+
 #### Make base setup
 
 ```go
@@ -88,23 +109,6 @@ dp.Handle(
 
 
 <details>
-<summary>Using builder</summary>
-
-```go
-dp.Bind(
-    dp.
-    NewHandler(tb.OnText).
-    Filter(message.EqualFold("hi")). // from pkg/filters/message,
-    Do(func (c tb.Context) error {
-        name := c.Message().Sender.FirstName
-        return c.Send("Hi, " + name + "!")
-    }),
-)
-```
-
-</details>
-
-<details>
 <summary>Using low-level interface</summary>
 
 ```go
@@ -150,24 +154,28 @@ router.Handle(handler, middleware) // middleware only for handler.
 
 ```
 
-
-
 ### Package routing
+
 Simplest way:
+
 ```go
 bot.Handle(tele.OnText, routing.New(
-	tf.NewRawHandler(
-		handleHi,
-		filterHiText,
-	),
-	tf.NewRawHandler(
-		handleWakeUpInGroup,
-		filterGroup,
-		filterWakeUpText,
-	)
+    tf.NewRawHandler(
+        handleHi,
+        filterHiText,
+    ),
+    tf.NewRawHandler(
+        handleWakeUpInGroup,
+        filters.All(
+            filterGroup,
+            filterWakeUpText,
+        ),
+    )
 ))
 ```
+
 Alternative. With this method you can add handlers in runtime.
+
 ```go
 
 route := new(routing.Route)
@@ -202,23 +210,23 @@ bot.Handle(
             },
         ),
 
-        // base handler
-        tf.NewRawHandler(func(c tb.Context) error {
+        // base handler without filter
+        tf.NewRawHandler(func (c tb.Context) error {
             return c.Send("Hi!")
-        }),
+        }, nil),
     ),
-
+``
     userDatabaseMiddleware,
 )
 ```
+
 **Please note that the order in which handlers are registered is important!**
 With a different order, we would not have been able to even reach the deeplink filter,
 because a basic handler without filters would immediately mark the event as matched.
 
-
 #### Add middlewares
-You can add middlewares only manually like in default telebot.
 
+You can add middlewares only manually like in default telebot.
 
 ## Execute bot
 
@@ -228,5 +236,43 @@ Just like in telebot
 bot.Start()
 ```
 
+# Migrate to v2
+
+Breaking changes:
+
+1. Telebot version bumped to v4
+2. Deleted dispatcher.Builder
+3. Deleted pkg/multibot
+4. Changed filter type in telefilter.RawHandler
+
+## Get new telebot version
+You need upgrade your project to telebot v4. It's main change.
+
+## Delete builder usage
+
+Find dispatcher.Builder usages in your code and replace it to another
+method.
+
+## Delete multibot usage
+Simple implementation of multibot no longer available.
+
+## Update RawHandler bindings
+Field 'Filters' removed, and replaced by field 'Filter'.
+
+```diff
+type RawHandler struct {
+-	Filters   []Filter
++	Filter   Filter
+	Callback tb.HandlerFunc
+}
+```
+
+Also changed signature of NewRawHandler. 
+It requires to provide filter in any case.
+
+If you need use many filters you must use `pkg/filters.All` or `pkg/filters.Any`
+
+
 # Technical information
+
 For more information about internals see [this document](TECHNICAL.md)
