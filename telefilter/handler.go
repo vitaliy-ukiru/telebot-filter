@@ -36,21 +36,20 @@ func NewRoute(endpoint any, handler Handler, middlewares ...tb.MiddlewareFunc) R
 // RawHandler is builtin handler with separated
 // filters and callback.
 type RawHandler struct {
-	Filters  []Filter
+	Filter   Filter
 	Callback tb.HandlerFunc
 }
 
-func NewRawHandler(callback tb.HandlerFunc, filters ...Filter) RawHandler {
-	return RawHandler{Filters: filters, Callback: callback}
+func NewRawHandler(callback tb.HandlerFunc, filter Filter) RawHandler {
+	return RawHandler{Filter: filter, Callback: callback}
 }
 
 func (h RawHandler) Check(c tb.Context) bool {
-	for _, f := range h.Filters {
-		if !f(c) {
-			return false
-		}
+	if h.Filter == nil {
+		return true
 	}
-	return true
+
+	return h.Filter(c)
 }
 
 func (h RawHandler) Execute(c tb.Context) error {

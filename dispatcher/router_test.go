@@ -9,25 +9,15 @@ import (
 var (
 	router      *dispatcher.Router
 	handleFunc  tb.HandlerFunc
-	filters     []tf.Filter
+	filter      tf.Filter
 	middlewares []tb.MiddlewareFunc
 )
 
 func ExampleRouter_Handle() {
 	router.Handle(
 		"/start",
-		tf.NewRawHandler(handleFunc, filters...),
+		tf.NewRawHandler(handleFunc, filter),
 		middlewares...,
-	)
-}
-
-func ExampleRouter_Bind() {
-	router.Bind(
-		dispatcher.
-			NewBuilder("/start").
-			Filter(filters...).
-			Do(handleFunc).
-			Use(middlewares...),
 	)
 }
 
@@ -35,7 +25,7 @@ func ExampleRouter_Dispatch() {
 	router.Dispatch(
 		tf.NewRoute(
 			"/start",
-			tf.NewRawHandler(handleFunc, filters...),
+			tf.NewRawHandler(handleFunc, filter),
 			middlewares...,
 		),
 	)
@@ -45,7 +35,7 @@ func ExampleRouter_Dispatch_withoutConstructor() {
 	router.Dispatch(
 		tf.Route{
 			Endpoint:    "/start",
-			Handler:     tf.NewRawHandler(handleFunc, filters...),
+			Handler:     tf.NewRawHandler(handleFunc, filter),
 			Middlewares: middlewares,
 		},
 	)

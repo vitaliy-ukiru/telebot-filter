@@ -26,8 +26,10 @@ func ExampleNew() {
 		),
 		tf.NewRawHandler(
 			handleWakeUpInGroup,
-			filterGroup,
-			filterWakeUpText,
+			filters.All(
+				filterGroup,
+				filterWakeUpText,
+			),
 		),
 	))
 }
