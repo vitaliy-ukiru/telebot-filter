@@ -215,7 +215,6 @@ bot.Handle(
             return c.Send("Hi!")
         }, nil),
     ),
-``
     userDatabaseMiddleware,
 )
 ```
