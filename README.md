@@ -49,7 +49,7 @@ You can use both package in one program, but endpoints
 must not intersect.
 The packages do not monitor this behavior.
 
-Read more about their differences and features [here](#structure).
+Read more about their differences and features [here](./TECHNICAL.md).
 
 I'll show API of both packages.
 
