@@ -34,7 +34,7 @@ endpoints of this module.
 ## Install module
 
 ```
-go get github.com/vitaliy-ukiru/telebot-filter
+go get github.com/vitaliy-ukiru/telebot-filter/v2
 ```
 
 ## Select flow
@@ -64,8 +64,8 @@ package main
 import (
 	"os"
 
-	"github.com/vitaliy-ukiru/telebot-filter/dispatcher"
-	tb "gopkg.in/telebot.v3"
+	"github.com/vitaliy-ukiru/telebot-filter/v2/dispatcher"
+	tb "gopkg.in/telebot.v4"
 )
 
 func main() {
