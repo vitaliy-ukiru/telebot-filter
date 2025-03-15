@@ -1,8 +1,8 @@
 package internal
 
 import (
-	"github.com/vitaliy-ukiru/telebot-filter/internal/container"
-	tb "gopkg.in/telebot.v3"
+	"github.com/vitaliy-ukiru/telebot-filter/v2/internal/container"
+	tb "gopkg.in/telebot.v4"
 )
 
 type MiddlewareList = container.List[tb.MiddlewareFunc]

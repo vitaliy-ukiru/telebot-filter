@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/vitaliy-ukiru/telebot-filter/internal"
-	"github.com/vitaliy-ukiru/telebot-filter/internal/container"
-	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
-	tb "gopkg.in/telebot.v3"
+	"github.com/vitaliy-ukiru/telebot-filter/v2/internal"
+	"github.com/vitaliy-ukiru/telebot-filter/v2/internal/container"
+	tf "github.com/vitaliy-ukiru/telebot-filter/v2/telefilter"
+	tb "gopkg.in/telebot.v4"
 )
 
 func newMiddleware(buff *strings.Builder, id string) tb.MiddlewareFunc {

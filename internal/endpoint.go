@@ -1,6 +1,6 @@
 package internal
 
-import tb "gopkg.in/telebot.v3"
+import tb "gopkg.in/telebot.v4"
 
 func ExtractRawEndpoint(e any) string {
 	if e == nil {

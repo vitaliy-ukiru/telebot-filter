@@ -7,9 +7,9 @@
 package routing
 
 import (
-	"github.com/vitaliy-ukiru/telebot-filter/internal/container"
-	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
-	tb "gopkg.in/telebot.v3"
+	"github.com/vitaliy-ukiru/telebot-filter/v2/internal/container"
+	tf "github.com/vitaliy-ukiru/telebot-filter/v2/telefilter"
+	tb "gopkg.in/telebot.v4"
 )
 
 // New creates generic handler in place.

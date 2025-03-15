@@ -1,9 +1,10 @@
 package routing_test
 
 import (
-	"github.com/vitaliy-ukiru/telebot-filter/routing"
-	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
-	tb "gopkg.in/telebot.v3"
+	"github.com/vitaliy-ukiru/telebot-filter/v2/pkg/filters"
+	"github.com/vitaliy-ukiru/telebot-filter/v2/routing"
+	tf "github.com/vitaliy-ukiru/telebot-filter/v2/telefilter"
+	tb "gopkg.in/telebot.v4"
 )
 
 var bot tb.Bot

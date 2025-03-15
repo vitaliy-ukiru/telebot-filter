@@ -1,9 +1,9 @@
 package dispatcher
 
 import (
-	"github.com/vitaliy-ukiru/telebot-filter/internal"
-	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
-	tb "gopkg.in/telebot.v3"
+	"github.com/vitaliy-ukiru/telebot-filter/v2/internal"
+	tf "github.com/vitaliy-ukiru/telebot-filter/v2/telefilter"
+	tb "gopkg.in/telebot.v4"
 )
 
 // Router is main handler setup type.

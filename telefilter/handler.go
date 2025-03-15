@@ -1,7 +1,7 @@
 package telefilter
 
 import (
-	tb "gopkg.in/telebot.v3"
+	tb "gopkg.in/telebot.v4"
 )
 
 // Handler is filters and running update.

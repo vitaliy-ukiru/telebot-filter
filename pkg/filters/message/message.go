@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
-	tb "gopkg.in/telebot.v3"
+	tf "github.com/vitaliy-ukiru/telebot-filter/v2/telefilter"
+	tb "gopkg.in/telebot.v4"
 )
 
 func Contains(part string) tf.Filter {
