@@ -11,8 +11,6 @@ import (
 
 // HandlerContainer represent object for communicate with telebot.
 // You can pass telebot.Group, telebot.Bot, or you custom type.
-//
-// For example, it can be multi bot abstraction (See pkg/multibot).
 type HandlerContainer interface {
 	Use(mw ...tb.MiddlewareFunc)
 	Handle(endpoint any, h tb.HandlerFunc, mw ...tb.MiddlewareFunc)
