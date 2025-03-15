@@ -20,12 +20,6 @@ func newRouter(dp *Dispatcher, parent *Router) *Router {
 	return &Router{dp: dp, parent: parent, mw: new(internal.MiddlewareList)}
 }
 
-// Bind builds and saves handler from [Builder].
-// More details in Builder documentation.
-func (r *Router) Bind(b *Builder) {
-	r.Dispatch(b.Build())
-}
-
 // Handle is more telebot same method.
 //
 // The only difference is that you need to provide [tf.Handler],

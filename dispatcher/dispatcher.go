@@ -53,11 +53,6 @@ func NewDispatcher(bot HandlerContainer) *Dispatcher {
 	return dp
 }
 
-// B is shortcut for creating builder.
-func (*Dispatcher) B(endpoint any) *Builder {
-	return NewBuilder(endpoint)
-}
-
 var errRouterNotMatch = errors.New("not find matching handler")
 
 // UseOnEndpoint registers middlewares on given endpoint like tb.OnText, etc.
@@ -119,13 +114,6 @@ func (d *Dispatcher) wrappedEndpointHandler(endpoint string) tb.HandlerFunc {
 		}
 		return fn(c)
 	}
-}
-
-// Bind builds and add handler from builder to root router.
-//
-// See details in [Router.Bind].
-func (d *Dispatcher) Bind(b *Builder) {
-	d.router.Bind(b)
 }
 
 // Handle manually adds handler with middlewares to root router
